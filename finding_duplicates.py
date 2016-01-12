@@ -1,4 +1,49 @@
 ## Finding duplicates in your iTunes Library XML
+import re
+import argparse
+import plistlib
+import numpy as np
+from matplotlib import pyplot
+
+def find_common_tracks(filenames):
+    """
+    Find common tacks in given playlist files
+    and save them to common.txt
+    """
+    trackname_sets = []
+    for filename in filenames:
+        # create a new set
+        tracknames = set()
+        #red in playlist
+        plist = plistlib.readPlist(filename)
+        # get the tracks
+        tracks = plist['Tracks']
+        # iterate through the tracks
+        for trackid, track in tracks.items():
+            try:
+                # add the track name to a set
+                tracknames.add(track['Name'])
+            except:
+                pass
+        # add to list
+        trackname_sets.append(tracknames)
+        # get the set of common tracks
+        common_tracks = set.intersection(*trackname_sets)
+        # write to file
+        if len(common_tracks) > 0:
+            f = open("common.txt", 'w')
+            for val in common_tracks:
+                s = "%s\n" % val
+                f.write(s.encode("UTF-8"))
+                f.close()
+                print("%d common tracks found. "
+                      "Track names written to common.txt." % len(common_tracks))
+        else:
+            print("No common tracks!")
+
+
+
+
 
 def find_duplicates(filename):
 	print('Finding duplicate tracks in %s...' % filename)
