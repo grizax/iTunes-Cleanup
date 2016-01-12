@@ -7,14 +7,13 @@ from matplotlib import pyplot
 
 def find_common_tracks(filenames):
     """
-    Find common tacks in given playlist files
-    and save them to common.txt
+    Find common tracks in given playlist files and save them to common.txt
     """
     trackname_sets = []
     for filename in filenames:
         # create a new set
         tracknames = set()
-        #red in playlist
+        # read in playlist
         plist = plistlib.readPlist(filename)
         # get the tracks
         tracks = plist['Tracks']
@@ -40,9 +39,6 @@ def find_common_tracks(filenames):
                       "Track names written to common.txt." % len(common_tracks))
         else:
             print("No common tracks!")
-
-
-
 
 
 def find_duplicates(filename):
