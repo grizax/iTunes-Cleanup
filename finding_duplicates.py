@@ -17,7 +17,7 @@ def find_common_tracks(filenames):
         plist = plistlib.readPlist(filename)
         # get the tracks
         tracks = plist['Tracks']
-        # iterate through the tracks
+        # iterate through the tracks using items() method
         for trackid, track in tracks.items():
             try:
                 # add the track name to a set
@@ -49,21 +49,40 @@ def find_duplicates(filename):
 	tracks = plist['Tracks']
 	# create a track name dictionary
 	tracknames = {}
-	# iterate through the tracks
+	# iterate through the tracks using items() method
+    # checking to see if name is 'in' keyword
 	for trackid, track in tracks.items():
 		try:
 			name = track['Name']
 			duration = track['Total Time']
-			# look for existing entries
+			# look for existing entries 'in' tracknames
 			if name in tracknames:
 				# if a name and duration match, increment the count
-				# round the track length to the nearest second
+				# and round the track length to the nearest second.
 				if duration//1000 == tracknames[name][0]//1000:
 					count = tracknames[name][1]
-					tracknames[names] = (duration, count+1)
-			else:
+                    tracknames[names] = (duration, count+1)
+                else:
 				# add dict entry as tuple (duration, count)
+                # if this is the first time the program has across
+                # the track name, it creates a new entry for it, with
+                # a count of 1.
 				tracknames[name] = (duration, 1)
 		except:
-			# ignore
+			# ignore in case tracks don't have name
 			pass
+    # store duplicates as (name, count) tuples
+    dups = []
+    for k, v in tracknames.items():
+        if v[1] > 1:
+            dups.append((v[1], k))
+        # save duplicates to a file
+        if len(dups) > 0:
+            print("Found %d duplicates. Track names saved to dup.txt" % len(dups))
+        else:
+            print("No duplicate tracks found.")
+        f = open("dups.txt", 'w')
+        for val in dups:
+            f.write("[%d] %s\n" % (val[0], val[1]))
+        f.close()
+
